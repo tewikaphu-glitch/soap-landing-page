@@ -1,1 +1,256 @@
 <!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ร้านสบู่สมุนไพรธรรมชาติ - Landing Page & Fulfillment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: absolute; left: 0; top: 0; width: 100%; border: 2px solid #000; padding: 20px; }
+    }
+  </style>
+</head>
+<body class="bg-stone-100 text-stone-800 font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-emerald-700 text-white p-4 shadow-md sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold">🌿 PureSoap Natural</h1>
+      <div class="space-x-2">
+        <button onclick="switchTab('store')" id="btn-store" class="bg-white text-emerald-800 px-3 py-1.5 rounded font-semibold text-sm">หน้าร้าน (สั่งซื้อ)</button>
+        <button onclick="switchTab('warehouse')" id="btn-warehouse" class="bg-emerald-800 hover:bg-emerald-900 text-white px-3 py-1.5 rounded font-semibold text-sm">คลังสินค้า (หยิบ / แพ็ก / จ่าหน้า)</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TAB 1: แลนดิ้งเพจขายสบู่ -->
+  <main id="tab-store" class="max-w-5xl mx-auto p-6">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-emerald-900">สบู่ธรรมชาติแท้ 100% อ่อนโยนต่อทุกสภาพผิว</h2>
+      <p class="text-stone-600 mt-2">เลือกสูตรที่ใช่สำหรับคุณ พร้อมจัดส่งรวดเร็วทั่วประเทศ</p>
+    </div>
+
+    <!-- สินค้า 2 SKUs -->
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <!-- SKU 1 -->
+      <div class="bg-white rounded-xl shadow p-5 flex flex-col justify-between border border-stone-200">
+        <div>
+          <img src="./images/soap1.jpg" alt="สบู่สูตรน้ำผึ้งขมิ้น" class="w-full h-56 object-cover rounded-lg mb-4 bg-amber-100" onerror="this.src='https://placehold.co/400x250/fde68a/78350f?text=SKU-001+Honey+Turmeric'">
+          <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2 py-1 rounded">SKU: SOAP-001</span>
+          <h3 class="text-xl font-bold mt-2">สบู่น้ำผึ้งป่าผสมขมิ้นชัน</h3>
+          <p class="text-sm text-stone-600 mt-1">ช่วยลดสิว ฝ้า จุดด่างดำ ให้ผิวกระจ่างใสเนียนนุ่มชุ่มชื้น</p>
+        </div>
+        <div class="mt-4 flex items-center justify-between border-t pt-4">
+          <span class="text-2xl font-bold text-emerald-700">฿129</span>
+          <button onclick="selectProduct('SOAP-001', 'สบู่น้ำผึ้งป่าผสมขมิ้นชัน')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium">เลือกสั่งซื้อสูตรนี้</button>
+        </div>
+      </div>
+
+      <!-- SKU 2 -->
+      <div class="bg-white rounded-xl shadow p-5 flex flex-col justify-between border border-stone-200">
+        <div>
+          <img src="./images/soap2.jpg" alt="สบู่สูตรชาเขียวมินต์" class="w-full h-56 object-cover rounded-lg mb-4 bg-emerald-100" onerror="this.src='https://placehold.co/400x250/a7f3d0/064e3b?text=SKU-002+Green+Tea'">
+          <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-1 rounded">SKU: SOAP-002</span>
+          <h3 class="text-xl font-bold mt-2">สบู่ชาเขียวสกัดเย็น & มินต์</h3>
+          <p class="text-sm text-stone-600 mt-1">คุมความมันส่วนเกิน ลดกลิ่นกาย เย็นสดชื่นสบายผิวตลอดวัน</p>
+        </div>
+        <div class="mt-4 flex items-center justify-between border-t pt-4">
+          <span class="text-2xl font-bold text-emerald-700">฿149</span>
+          <button onclick="selectProduct('SOAP-002', 'สบู่ชาเขียวสกัดเย็น & มินต์')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium">เลือกสั่งซื้อสูตรนี้</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ฟอร์มสั่งซื้อ -->
+    <div id="order-form-box" class="bg-white rounded-xl shadow-md p-6 max-w-xl mx-auto border border-emerald-200">
+      <h3 class="text-xl font-bold text-emerald-900 mb-4">📝 กรอกข้อมูลสั่งซื้อสินค้า</h3>
+      <form id="orderForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">เลือกสูตรสบู่ (SKU)</label>
+          <select id="skuSelect" class="w-full border rounded-lg p-2.5 bg-stone-50" required>
+            <option value="SOAP-001|สบู่น้ำผึ้งป่าผสมขมิ้นชัน">SOAP-001 : สบู่น้ำผึ้งป่าผสมขมิ้นชัน (129 บาท)</option>
+            <option value="SOAP-002|สบู่ชาเขียวสกัดเย็น & มินต์">SOAP-002 : สบู่ชาเขียวสกัดเย็น & มินต์ (149 บาท)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">จำนวน (ก้อน)</label>
+          <input type="number" id="qty" min="1" value="1" class="w-full border rounded-lg p-2.5" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">ชื่อ-นามสกุล ผู้รับ</label>
+          <input type="text" id="customer_name" placeholder="เช่น นางสาวใจดี มีสุข" class="w-full border rounded-lg p-2.5" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">เบอร์โทรศัพท์</label>
+          <input type="tel" id="phone" placeholder="เช่น 081-234-5678" class="w-full border rounded-lg p-2.5" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">ที่อยู่สำหรับจัดส่ง</label>
+          <textarea id="address" rows="3" placeholder="บ้านเลขที่ ถนน ตำบล/แขวง อำเภอ/เขต จังหวัด รหัสไปรษณีย์" class="w-full border rounded-lg p-2.5" required></textarea>
+        </div>
+        <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition">ยืนยันคำสั่งซื้อ</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- TAB 2: ระบบจัดการคลังสินค้า (หยิบสินค้า - แพ็ก - จ่าหน้าพัสดุ) -->
+  <section id="tab-warehouse" class="max-w-5xl mx-auto p-6 hidden">
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-stone-900">📦 ระบบจัดการคำสั่งซื้อ (หยิบ - แพ็ก - จ่าหน้าพัสดุ)</h2>
+        <p class="text-sm text-stone-600">ดึงข้อมูลแบบเรียลไทม์จาก Google Sheet</p>
+      </div>
+      <button onclick="loadOrders()" class="bg-stone-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-stone-700">🔄 รีเฟรชข้อมูล</button>
+    </div>
+
+    <div id="orders-container" class="space-y-4">
+      <p class="text-center text-stone-500 py-10">กำลังโหลดรายการสั่งซื้อ...</p>
+    </div>
+  </section>
+
+  <!-- Modal ใบจ่าหน้าพัสดุ -->
+  <div id="label-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl">
+      <div id="print-area" class="border-2 border-black p-5 rounded bg-white text-black">
+        <div class="flex justify-between border-b-2 border-black pb-2 mb-3">
+          <div>
+            <p class="font-bold text-lg">ใบจ่าหน้าพัสดุ (SHIPPING LABEL)</p>
+            <p class="text-xs">รหัสออเดอร์: <span id="lbl-id" class="font-bold"></span></p>
+          </div>
+          <div class="text-right text-xs">
+            <p class="font-bold">ผู้ส่ง: ร้าน PureSoap Natural</p>
+            <p>123 ถ.พหลโยธิน เขตจตุจักร กทม. 10900</p>
+            <p>โทร: 02-999-9999</p>
+          </div>
+        </div>
+        <div class="my-4 p-3 bg-stone-50 border border-dashed border-black">
+          <p class="text-xs font-bold uppercase text-stone-600">กรุณาส่ง (ผู้รับ):</p>
+          <p id="lbl-name" class="text-lg font-bold mt-1"></p>
+          <p id="lbl-phone" class="font-semibold text-sm mt-0.5"></p>
+          <p id="lbl-address" class="text-sm mt-1 leading-relaxed"></p>
+        </div>
+        <div class="border-t border-black pt-2 text-sm flex justify-between">
+          <span>รายการในกล่อง: <strong id="lbl-item"></strong></span>
+          <span>จำนวน: <strong id="lbl-qty"></strong> ก้อน</span>
+        </div>
+      </div>
+      <div class="mt-4 flex justify-end gap-2">
+        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold">🖨️ พิมพ์ใบจ่าหน้า</button>
+        <button onclick="closeModal()" class="bg-stone-300 hover:bg-stone-400 text-stone-800 px-4 py-2 rounded font-semibold">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDcnWnANYaQ68yzZHKuACKA-3d1tKgzkJs0SqVQ8zGdWO-XGbhYj5E2fsHb3vvJoh/exec';
+
+    function switchTab(tab) {
+      document.getElementById('tab-store').classList.toggle('hidden', tab !== 'store');
+      document.getElementById('tab-warehouse').classList.toggle('hidden', tab !== 'warehouse');
+      if (tab === 'warehouse') loadOrders();
+    }
+
+    function selectProduct(sku, name) {
+      document.getElementById('skuSelect').value = `${sku}|${name}`;
+      document.getElementById('order-form-box').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerText = 'กำลังบันทึกคำสั่งซื้อ...';
+
+      const [sku, product_name] = document.getElementById('skuSelect').value.split('|');
+      const payload = {
+        action: 'create',
+        sku,
+        product_name,
+        qty: document.getElementById('qty').value,
+        customer_name: document.getElementById('customer_name').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        alert('สั่งซื้อสำเร็จ! บันทึกข้อมูลลง Google Sheet เรียบร้อยแล้ว');
+        document.getElementById('orderForm').reset();
+      } catch (err) {
+        alert('เกิดข้อผิดพลาด: ' + err);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'ยืนยันคำสั่งซื้อ';
+      }
+    });
+
+    async function loadOrders() {
+      const container = document.getElementById('orders-container');
+      container.innerHTML = '<p class="text-center text-stone-500 py-10">กำลังโหลดข้อมูลจาก Google Sheet...</p>';
+      try {
+        const res = await fetch(SCRIPT_URL);
+        const orders = await res.json();
+        if (!orders.length) {
+          container.innerHTML = '<p class="text-center text-stone-500 py-10">ยังไม่มีรายการสั่งซื้อ</p>';
+          return;
+        }
+        container.innerHTML = orders.reverse().map(o => `
+          <div class="bg-white p-5 rounded-xl shadow border border-stone-200 flex flex-col md:flex-row justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-lg text-emerald-800">${o.order_id}</span>
+                <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${
+                  o.status === 'แพ็กเสร็จพร้อมส่ง' ? 'bg-green-100 text-green-800' :
+                  o.status === 'หยิบสินค้าแล้ว' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
+                }">${o.status}</span>
+              </div>
+              <p class="mt-2 font-semibold text-stone-900">รายการที่ต้องหยิบ: <span class="text-emerald-700">[${o.sku}] ${o.product_name}</span> จำนวน <span class="underline font-bold">${o.qty} ก้อน</span></p>
+              <p class="text-sm text-stone-600 mt-1">ผู้รับ: ${o.customer_name} (${o.phone})</p>
+              <p class="text-sm text-stone-600">ที่อยู่: ${o.address}</p>
+            </div>
+            <div class="flex flex-col justify-center gap-2 min-w-[200px]">
+              <button onclick="updateStatus('${o.order_id}', 'หยิบสินค้าแล้ว')" class="bg-amber-500 hover:bg-amber-600 text-white text-sm py-1.5 px-3 rounded font-medium">1. ยืนยันหยิบสินค้า (Pick)</button>
+              <button onclick="updateStatus('${o.order_id}', 'แพ็กเสร็จพร้อมส่ง')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm py-1.5 px-3 rounded font-medium">2. ยืนยันแพ็กสินค้า (Pack)</button>
+              <button onclick='openLabel(${JSON.stringify(o)})' class="bg-stone-800 hover:bg-stone-900 text-white text-sm py-1.5 px-3 rounded font-medium">3. ออกใบจ่าหน้าพัสดุ</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = '<p class="text-center text-red-500 py-10">โหลดข้อมูลไม่สำเร็จ ตรวจสอบลิงก์ SCRIPT_URL อีกครั้ง</p>';
+      }
+    }
+
+    async function updateStatus(orderId, newStatus) {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'updateStatus', order_id: orderId, new_status: newStatus })
+      });
+      setTimeout(loadOrders, 800);
+    }
+
+    function openLabel(order) {
+      document.getElementById('lbl-id').innerText = order.order_id;
+      document.getElementById('lbl-name').innerText = order.customer_name;
+      document.getElementById('lbl-phone').innerText = 'โทร: ' + order.phone;
+      document.getElementById('lbl-address').innerText = order.address;
+      document.getElementById('lbl-item').innerText = `[${order.sku}] ${order.product_name}`;
+      document.getElementById('lbl-qty').innerText = order.qty;
+      document.getElementById('label-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('label-modal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
